@@ -9,7 +9,7 @@ import { User } from './entities/user.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { HashService } from 'src/hash/hash.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, QueryFailedError, Repository } from 'typeorm';
+import { FindOneOptions, ILike, QueryFailedError, Repository } from 'typeorm';
 import { DatabaseError } from 'pg';
 
 @Injectable()
@@ -47,7 +47,10 @@ export class UsersService {
 
   findMany(query: string): Promise<User[]> {
     return this.usersRepository.find({
-      where: [{ username: query }, { email: query }],
+      where: [
+        { username: ILike(`%${query}%`) },
+        { email: ILike(`%${query}%`) },
+      ],
     });
   }
 
